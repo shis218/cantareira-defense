@@ -34,13 +34,16 @@ using UnityEngine.UI;
 
 public class GameManagerBehavior : MonoBehaviour
 {
-
     public Text goldLabel;
     private int gold;
-    public int Gold
-    {
-        get
-        {
+    GameObject[] pauseObjects;
+	GameObject[] epauseObjects;
+	GameObject[] gpauseObjects;
+	
+	Button btnLoja;
+	
+	public int Gold{
+        get{
             return gold;
         }
         set
@@ -59,9 +62,23 @@ public class GameManagerBehavior : MonoBehaviour
     public int Wave
     {
         get { return wave; }
-        set
-        {
+        set{
             wave = value;
+			if(wave==0){
+			Time.timeScale = 1;
+		 pauseObjects = GameObject.FindGameObjectsWithTag("Loja");
+		 epauseObjects = GameObject.FindGameObjectsWithTag("inventory");
+		 gpauseObjects = GameObject.FindGameObjectsWithTag("BotaoL");
+		hidePaused();
+		
+		 btnLoja = GameObject.Find("btnLoja").GetComponent<UnityEngine.UI.Button>();
+		btnLoja.onClick.AddListener(showPaused);
+		Button btnEqp = GameObject.Find("btnEquipar").GetComponent<UnityEngine.UI.Button>();
+		btnEqp.onClick.AddListener(ShowEquip);
+			
+			
+			}
+			
             if (!gameOver)
             {
                 for (int i = 0; i < nextWaveLabels.Length; i++)
@@ -118,12 +135,88 @@ public class GameManagerBehavior : MonoBehaviour
         Gold = 2500;
         Wave = 0;
         Health = 5;
+		
+		
+	
     }
 
     // Update is called once per frame
-    void Update()
-    {
+   void Update () {
 
-    }
+		//uses the p button to pause and unpause the game
+		if(Input.GetKeyDown(KeyCode.L))
+		{
+			if(Time.timeScale == 1)
+			{
+				Time.timeScale = 0;
+				showPaused();
+			} else if (Time.timeScale == 0){
+				Debug.Log ("high");
+				Time.timeScale = 1;
+				hidePaused();
+			}
+		}
+	}
+
+	//controls the pausing of the scene
+	public void pauseControl(){
+			if(Time.timeScale == 1)
+			{
+				Time.timeScale = 0;
+				showPaused();
+			} else if (Time.timeScale == 0){
+				Time.timeScale = 1;
+				hidePaused();
+			}
+	}
+
+
+public void showPaused(){
+				Time.timeScale = 0;
+	
+		foreach(GameObject g in pauseObjects){
+			g.SetActive(true);
+			
+		}
+		foreach(GameObject g in epauseObjects){
+			g.SetActive(false);
+			
+		}
+		
+		foreach(GameObject g in gpauseObjects){
+			g.SetActive(false);
+			
+		}
+		
+	}
+
+public void hidePaused(){
+				Time.timeScale = 1;
+		foreach(GameObject g in pauseObjects){
+			g.SetActive(false);
+		}
+		foreach(GameObject g in epauseObjects){
+			g.SetActive(false);
+		}
+		foreach(GameObject g in gpauseObjects){
+			g.SetActive(true);
+		}
+		
+	}	
+	
+	
+public void ShowEquip(){
+				Time.timeScale = 1;
+		foreach(GameObject g in pauseObjects){
+			g.SetActive(false);
+		}
+		foreach(GameObject g in epauseObjects){
+			g.SetActive(true);
+		}
+		foreach(GameObject g in gpauseObjects){
+			g.SetActive(false);
+		}
+		
+	}	
 
 }
